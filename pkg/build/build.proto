@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package build;
+
+service Build {
+  rpc GetInfo(InfoRequest) returns (InfoReply) {}
+  rpc GetEngineInfo(EngineInfoRequest) returns (EngineInfoReply) {}
+  rpc StartBuild(StartBuildRequest) returns (StartBuildReply) {}
+  rpc BuildStatus(BuildStatusRequest) returns (BuildStatusReply) {}
+  rpc GetArtifacts(GetArtifactsRequest) returns (GetArtifactsReply) {}
+}
+
+message InfoRequest {
+  // Intentionally empty.
+}
+
+message InfoReply {
+  // Name of the build server.
+  string name = 1;
+  // Version of the build server.
+  string version = 2;
+}
+
+message EngineInfoRequest {
+  // Name of the build engine whose info is being requested.
+  string name = 1;
+}
+
+message EngineInfoReply {
+  // Name of the build engine.
+  string name = 1;
+  // Version of the build engine.
+  string version = 2;
+}
+
+message StartBuildRequest {
+  // The command to run in the build container.
+  repeated string command = 1;
+  // The container image to start the build with.
+  string image = 2;
+  // The build context of the build. It's a tar gzipped byte stream.
+  bytes buildCtx = 3;
+  // The mount path where the source code is mounted.
+  string mountPath = 4;
+}
+
+message StartBuildReply {
+  // The ID of the build.
+  string id = 1;
+}
+
+message BuildStatusRequest {
+  // The ID of the build.
+  string id = 1;
+}
+
+message BuildStatusReply {
+  // The ID of the build.
+  string id = 1;
+  // The ID of the container.
+  string containerID = 2;
+  // The Status of the build.
+  string status = 3;
+}
+
+message GetArtifactsRequest {
+  // The ID of the build.
+  string id = 1;
+}
+
+message GetArtifactsReply {
+  // The build artifacts returned from the build server in tar gzipped byte
+  // stream.
+  bytes artifacts = 1;
+}
